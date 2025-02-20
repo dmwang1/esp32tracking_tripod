@@ -20,7 +20,7 @@ Computer vision-based tracking tripod using ESP32-CAM and MicroPython.
    esptool.py --port /dev/tty.usbserial-A5069RR4 erase_flash
 
     # Flash firmware
-    esptool.py --port /dev/tty.usbserial-A5069RR4 --baud 460800 write_flash -z 0x1000 firmware_name.bin
+   esptool.py --port /dev/tty.usbserial-A5069RR4 --baud 460800 write_flash -z 0x1000 ESP32_GENERIC_S3-20231227-v1.22.0-544-g03032bd36.bin
 '''
 
 
