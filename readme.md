@@ -31,3 +31,13 @@ Computer vision-based tracking tripod using ESP32-CAM and MicroPython.
    ```
 
 # esp32tracking_tripod
+
+
+# To activate (run this whenever you start working)
+source venv/bin/activate
+
+# To deactivate (when you're done)
+deactivate
+
+# To see what packages are installed
+pip list
