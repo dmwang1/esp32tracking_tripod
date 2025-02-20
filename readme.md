@@ -21,3 +21,4 @@ Computer vision-based tracking tripod using ESP32-CAM and MicroPython.
    ampy --port COM3 put src/main.py
    ```
 
+# esp32tracking_tripod
