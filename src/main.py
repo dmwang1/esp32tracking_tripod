@@ -2,6 +2,7 @@
 import time
 import gc
 import os
+import machine
 
 def print_header():
     """Print a header with system info"""
@@ -39,20 +40,34 @@ def run_led_test():
             led.toggle()
             time.sleep(0.2)
             
-        # Test PWM brightness control
-        print("Testing brightness control...")
+        # Test PWM brightness control (using direct PWM if available)
+        print("Testing brightness variation...")
         
-        # Gradually increase brightness
-        for i in range(0, 1024, 100):
-            led.set_brightness(i)
-            time.sleep(0.1)
+        try:
+            # Try using PWM for brightness control
+            led_pwm = machine.PWM(machine.Pin(4))
+            led_pwm.freq(1000)
             
-        time.sleep(0.5)
-        
-        # Gradually decrease brightness
-        for i in range(1023, -1, -100):
-            led.set_brightness(i)
-            time.sleep(0.1)
+            # Gradually increase brightness
+            for i in range(0, 1024, 100):
+                led_pwm.duty(i)
+                time.sleep(0.1)
+                
+            time.sleep(0.5)
+            
+            # Gradually decrease brightness
+            for i in range(1023, -1, -100):
+                led_pwm.duty(i)
+                time.sleep(0.1)
+                
+            # Turn off PWM
+            led_pwm.deinit()
+        except Exception as e:
+            print(f"PWM brightness test skipped: {e}")
+            # Fall back to simple blinking as alternative
+            for _ in range(10):
+                led.toggle()
+                time.sleep(0.1)
             
         # Turn off LED when done
         led.off()
@@ -63,6 +78,34 @@ def run_led_test():
         return False
     except Exception as e:
         print(f"Error running LED test: {e}")
+        return False
+
+def run_camera_test():
+    """Run the camera test if esp_camera.py is available"""
+    print("Running camera test...")
+    try:
+        from esp_camera import Camera
+        
+        # Create a camera instance
+        camera = Camera()
+        
+        # Run the camera hardware test
+        camera.test_camera()
+        
+        # Try to capture a test image
+        result = camera.capture_test_image("camera_test.jpg")
+        
+        if result:
+            print("Camera test completed successfully!")
+        else:
+            print("Camera test failed")
+            
+        return True
+    except ImportError:
+        print("esp_camera.py module not found. Please upload it first.")
+        return False
+    except Exception as e:
+        print(f"Error running camera test: {e}")
         return False
 
 def run_custom_script(filename):
@@ -85,6 +128,8 @@ def main():
     # Try to run custom scripts in priority order
     if run_custom_script("user_script.py"):
         print("Custom user_script.py executed")
+    elif run_camera_test():
+        print("Camera test executed")
     elif run_led_test():
         print("LED test executed")
     else:
