@@ -8,6 +8,7 @@ def print_header():
     print("\n" + "="*40)
     print("ESP32 AUTO-RUN SCRIPT")
     print("="*40)
+   
     try:
         print("Files on device:")
         for file in os.listdir():
